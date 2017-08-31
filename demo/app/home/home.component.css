@@ -1,6 +1,6 @@
 .snackbar {
     text-align: center;
     padding: 20;
-    border-top-color: red;
-    border-top-width: 3;
+    border-color: red;
+    border-width: 3;
 }
