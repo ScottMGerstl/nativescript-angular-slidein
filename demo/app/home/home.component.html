@@ -1,0 +1,10 @@
+<GridLayout columns="*,*" rows="auto,*,auto">
+    <!-- My Component Page Markup -->
+    <Button (tap)="onShowTapped($event)"
+            text="Open" row="0" col="0"></Button>
+    <Button (tap)="onHideTapped($event)"
+            text="Close" row="0" col="1"></Button>
+    <StackLayout slide-in class="slide" col="0" colSpan="2" row="2">
+        <Label class="snackbar" text="Hi!"></Label>
+    </StackLayout>
+</GridLayout>
