@@ -1,5 +1,6 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { SlideInDirective } from '../slide-in.directive';
+import { Component, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { SlideInDirective, SlidePosition } from '../slide-in.directive';
+import { ListPicker } from "ui/list-picker";
 
 @Component({
     selector: 'home',
@@ -9,13 +10,31 @@ import { SlideInDirective } from '../slide-in.directive';
 })
 export class HomeComponent {
 
-    @ViewChild(SlideInDirective) private slider: SlideInDirective;
+    @ViewChildren(SlideInDirective) private sliders: QueryList<SlideInDirective>;
 
-    private onShowTapped(): void {
-        this.slider.show()
+    private slidePositions: Array<SlidePosition>;
+    private slidePosition: SlidePosition;
+
+    constructor() {
+        this.slidePositions = [
+            'bottom',
+            'top',
+            'left',
+            'right'
+        ];
+        this.slidePosition = this.slidePositions[0];
     }
 
-    private onHideTapped(): void {
-        this.slider.dismiss()
+    private selectedIndexChanged(args): void {
+        let picker = <ListPicker>args.object;
+        this.slidePosition = this.slidePositions[picker.selectedIndex];
+    }
+
+    private onShowTapped(selector: string): void {
+        this.sliders.find(s => s.selector === selector).show()
+    }
+
+    private onHideTapped(selector: string): void {
+        this.sliders.find(s => s.selector === selector).dismiss()
     }
 }

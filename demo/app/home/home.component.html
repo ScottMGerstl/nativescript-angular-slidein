@@ -1,10 +1,25 @@
-<GridLayout columns="*,*" rows="auto,*,auto">
+<GridLayout columns="*,*" rows="auto,auto,auto,*,auto">
     <!-- My Component Page Markup -->
-    <Button (tap)="onShowTapped($event)"
-            text="Open" row="0" col="0"></Button>
-    <Button (tap)="onHideTapped($event)"
-            text="Close" row="0" col="1"></Button>
-    <StackLayout slide-in class="slide" col="0" colSpan="2" row="2">
+
+    <ListPicker col="0", colSpan="2" row="1" [items]="slidePositions" selectedIndex="0" (selectedIndexChange)="selectedIndexChanged($event)"></ListPicker>
+
+    <Button (tap)="onShowTapped(slidePosition)" text="Open" row="2" col="0"></Button>
+    <Button (tap)="onHideTapped(slidePosition)" text="Close" row="2" col="1"></Button>
+
+    <!-- Sliders -->
+    <StackLayout slide-in slideFrom="top" selector="top" class="top" colSpan="2" col="0" row="0">
+        <Label class="snackbar" text="Got your attention!"></Label>
+    </StackLayout>
+
+    <StackLayout slide-in slideFrom="left" selector="left" class="left-drawer" col="0" rowSpan="4" row="0">
+        <Label class="drawer" text="Maybe navigation?"></Label>
+    </StackLayout>
+
+    <StackLayout slide-in slideFrom="right" selector="right" class="right-drawer" col="1" rowSpan="4" row="0">
+        <Label class="drawer" text="This is a drawer?"></Label>
+    </StackLayout>
+
+    <StackLayout slide-in selector="bottom" slideFrom="bottom" class="bottom" col="0" colSpan="2" row="4">
         <Label class="snackbar" text="Hi!"></Label>
     </StackLayout>
 </GridLayout>

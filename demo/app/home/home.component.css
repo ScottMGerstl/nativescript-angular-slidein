@@ -1,6 +1,35 @@
-.snackbar {
+.snackbar, .drawer {
     text-align: center;
     padding: 20;
     border-color: red;
     border-width: 3;
+}
+
+.top {
+    z-index: 999;
+}
+
+.top {
+    background-color: red;
+    border-bottom-width: 3;
+    border-bottom-color: #333333;
+}
+
+.bottom {
+    background-color: #999999;
+    border-top-width: 3;
+    border-top-color: #333333;
+}
+
+.right-drawer, .left-drawer {
+    background-color: lavender;
+    width: 100%;
+}
+.right-drawer {
+    border-left-width: 3;
+    border-left-color: #333333;
+}
+.left-drawer {
+    border-right-width: 3;
+    border-right-color: #333333;
 }
