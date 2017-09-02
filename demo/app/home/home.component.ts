@@ -1,5 +1,5 @@
 import { Component, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { SlideInDirective, SlidePosition } from '../slide-in.directive';
+import { SlideInDirective, SlidePosition } from '../slide-in/slide-in.directive';
 import { ListPicker } from "ui/list-picker";
 
 @Component({

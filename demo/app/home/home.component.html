@@ -7,19 +7,19 @@
     <Button (tap)="onHideTapped(slidePosition)" text="Close" row="2" col="1"></Button>
 
     <!-- Sliders -->
-    <StackLayout slide-in slideFrom="top" selector="top" class="top" colSpan="2" col="0" row="0">
-        <Label class="snackbar" text="Got your attention!"></Label>
+    <StackLayout slide-in slideFrom="top" selector="top" slideDuration="300" class="top" colSpan="2" col="0" row="0">
+        <Label class="snackbar" text="Boo!"></Label>
     </StackLayout>
 
     <StackLayout slide-in slideFrom="left" selector="left" class="left-drawer" col="0" rowSpan="4" row="0">
         <Label class="drawer" text="Maybe navigation?"></Label>
     </StackLayout>
 
-    <StackLayout slide-in slideFrom="right" selector="right" class="right-drawer" col="1" rowSpan="4" row="0">
-        <Label class="drawer" text="This is a drawer?"></Label>
+    <StackLayout slide-in slideFrom="right" selector="right" slideDuration="2000,300" class="right-drawer" col="1" rowSpan="4" row="0">
+        <Label class="drawer" text="Don't mind me"></Label>
     </StackLayout>
 
     <StackLayout slide-in selector="bottom" slideFrom="bottom" class="bottom" col="0" colSpan="2" row="4">
-        <Label class="snackbar" text="Hi!"></Label>
+        <Label class="snackbar" text="Nom nom nom"></Label>
     </StackLayout>
 </GridLayout>

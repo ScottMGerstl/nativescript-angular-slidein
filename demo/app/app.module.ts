@@ -4,7 +4,7 @@ import { AppRoutingModule } from "./app.routing";
 import { AppComponent } from "./app.component";
 
 import { HomeComponent } from "./home/home.component";
-import { SlideInDirective } from "./slide-in.directive";
+import { SlideInDirective } from "./slide-in/slide-in.directive";
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
