@@ -1,5 +1,6 @@
 import { Directive, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { screen, ScreenMetrics } from 'platform';
+import { Animation } from 'tns-core-modules/ui/animation';
 
 import { DurationParser } from './duration.parser';
 import { SlideDurations, defaultSlideDuration } from './slide-durations';
@@ -19,6 +20,8 @@ export class SlideInDirective implements OnInit, OnChanges {
 
     private element: ElementRef;
     private internalSlideDurations: SlideDurations;
+    private showAnimation: Animation;
+    private hideAnimation: Animation;
 
     constructor(el: ElementRef) {
         this.element = el;
@@ -42,24 +45,55 @@ export class SlideInDirective implements OnInit, OnChanges {
     }
 
     public show(): void {
-        this.element.nativeElement.animate({
-            translate: {
-                x: this.getTranslationX(),
-                y: this.getTranslationY()
-            },
-            duration: this.internalSlideDurations.slideIn
-        });
+
+        if (!this.showAnimation || this.showAnimation.isPlaying === false) {
+
+            if (this.hideAnimation && this.hideAnimation.isPlaying === true) {
+                this.hideAnimation.cancel();
+            }
+
+            this.showAnimation = this.element.nativeElement.createAnimation({
+                translate: {
+                    x: this.getTranslationX(),
+                    y: this.getTranslationY()
+                },
+                duration: this.internalSlideDurations.slideIn
+            });
+
+            this.showAnimation.play()
+                .catch((reason: Error) => {
+                    // throw all errors except cancellation
+                    if (reason.message.indexOf('cancel') === -1) {
+                        throw reason;
+                    }
+                });
+        }
     }
 
     public dismiss(): void {
-        this.element.nativeElement.animate({
-            translate: {
-                x: this.getTranslationX() * -1,
-                y: this.getTranslationY() * -1
-            },
-            duration: this.internalSlideDurations.slideOut
-        })
-            .then(() => this.dismissed.emit(true));
+        if (!this.hideAnimation || this.hideAnimation.isPlaying === false) {
+
+            if (this.showAnimation && this.showAnimation.isPlaying === true) {
+                this.showAnimation.cancel();
+            }
+
+            this.hideAnimation = this.element.nativeElement.createAnimation({
+                translate: {
+                    x: this.getTranslationX() * -1,
+                    y: this.getTranslationY() * -1
+                },
+                duration: this.internalSlideDurations.slideOut
+            });
+
+            this.hideAnimation.play()
+                .then(() => this.dismissed.emit(true))
+                .catch((reason: Error) => {
+                    // throw all errors except cancellation
+                    if (reason.message.indexOf('cancel') === -1) {
+                        throw reason;
+                    }
+                });
+        }
     }
 
     private getTranslateYHeight(): number {
