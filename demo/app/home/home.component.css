@@ -24,6 +24,7 @@
 .right-drawer, .left-drawer {
     background-color: lavender;
     width: 100%;
+    z-index: 999;
 }
 .right-drawer {
     border-left-width: 3;

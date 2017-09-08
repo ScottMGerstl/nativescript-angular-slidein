@@ -37,6 +37,8 @@ export class SlideInDirective implements OnInit, OnChanges {
             let change = changes[propName];
 
             if (propName === 'slideDuration') {
+
+                // if the slideDduration changes, calulate it into an internal model
                 if (change.firstChange === true || change.previousValue !== change.currentValue) {
                     this.internalSlideDurations = DurationParser.parse(this.slideDuration);
                 }
@@ -44,14 +46,23 @@ export class SlideInDirective implements OnInit, OnChanges {
         }
     }
 
+    /**
+     * Shows the view. If the view is in the process of dismissing,
+     * it will interrupt the dismiss animation, cancel it, and start the show animation
+     *
+     * @memberof SlideInDirective
+     */
     public show(): void {
 
+        // if the show animation is already running, don't execute again
         if (!this.showAnimation || this.showAnimation.isPlaying === false) {
 
+            // if the hide animation is running, cancel it so the show animation can take over
             if (this.hideAnimation && this.hideAnimation.isPlaying === true) {
                 this.hideAnimation.cancel();
             }
 
+            // create the cancellable show animation
             this.showAnimation = this.element.nativeElement.createAnimation({
                 translate: {
                     x: this.getTranslationX(),
@@ -60,23 +71,31 @@ export class SlideInDirective implements OnInit, OnChanges {
                 duration: this.internalSlideDurations.slideIn
             });
 
+            // run the animation
             this.showAnimation.play()
                 .catch((reason: Error) => {
-                    // throw all errors except cancellation
-                    if (reason.message.indexOf('cancel') === -1) {
-                        throw reason;
-                    }
+                    this.throwIfNotCancelled(reason);
                 });
         }
     }
 
+    /**
+     * dismisses the view. If the view is in the process of showing,
+     * it will interrupt the show animation, cancel it, and start the dismiss animation.
+     * If the dismiss animation completes successfully without being cancelled, the dismissed event will be emitted
+     *
+     * @memberof SlideInDirective
+     */
     public dismiss(): void {
+        // if the hide animation is already running, don't execute again
         if (!this.hideAnimation || this.hideAnimation.isPlaying === false) {
 
+            // if the show animation is running, cancel it so the hide animation can take over
             if (this.showAnimation && this.showAnimation.isPlaying === true) {
                 this.showAnimation.cancel();
             }
 
+            // create the cancellable hide animation
             this.hideAnimation = this.element.nativeElement.createAnimation({
                 translate: {
                     x: this.getTranslationX() * -1,
@@ -85,25 +104,25 @@ export class SlideInDirective implements OnInit, OnChanges {
                 duration: this.internalSlideDurations.slideOut
             });
 
+            // run the animation
             this.hideAnimation.play()
-                .then(() => this.dismissed.emit(true))
+                .then(() => {
+                    // notify when the dismiss has finished successfully
+                    this.dismissed.emit(true)
+                })
                 .catch((reason: Error) => {
-                    // throw all errors except cancellation
-                    if (reason.message.indexOf('cancel') === -1) {
-                        throw reason;
-                    }
+                    this.throwIfNotCancelled(reason);
                 });
         }
     }
 
-    private getTranslateYHeight(): number {
-        return this.element.nativeElement.getMeasuredHeight() / screenScale;
-    }
-
-    private getTranslateXWidth(): number {
-        return this.element.nativeElement.getMeasuredWidth() / screenScale;
-    }
-
+    /**
+     * Sets an initial margin on the view based on the slideFrom input to move the view off
+     * the screen on the side it will slide in from
+     *
+     * @private
+     * @memberof SlideInDirective
+     */
     private setinitialMargin(): void {
         switch (this.slideFrom) {
             case 'top': this.element.nativeElement.marginTop = screen.mainScreen.heightDIPs * -1; break;
@@ -113,6 +132,16 @@ export class SlideInDirective implements OnInit, OnChanges {
         }
     }
 
+    /**
+     * Gets the distance to translate on the Y axis based on the slideFrom input.
+     * If sliding from left or right, translation is 0.
+     * If sliding from top, the tranlation is the height of the view .
+     * If sliding from bottom (default), the tranlation is the negative height of the view.
+     *
+     * @private
+     * @returns {number} the distance to translate Y
+     * @memberof SlideInDirective
+     */
     private getTranslationY(): number {
 
         let y: number = 0;
@@ -127,6 +156,16 @@ export class SlideInDirective implements OnInit, OnChanges {
         return y;
     }
 
+    /**
+     * Gets the distance to translate on the X axis based on the slideFrom input.
+     * If sliding from top or bottom (default), translation is 0.
+     * If sliding from left, the tranlation is the width of the view .
+     * If sliding from right, the tranlation is the negative width of the view.
+     *
+     * @private
+     * @returns {number}
+     * @memberof SlideInDirective
+     */
     private getTranslationX(): number {
 
         let x: number = 0;
@@ -139,6 +178,43 @@ export class SlideInDirective implements OnInit, OnChanges {
         }
 
         return x;
+    }
+
+    /**
+     * Gets the height of the element to be used as the distance to translate on the Y axis
+     *
+     * @private
+     * @returns {number} the measured height of the view
+     * @memberof SlideInDirective
+     */
+    private getTranslateYHeight(): number {
+        return this.element.nativeElement.getMeasuredHeight() / screenScale;
+    }
+
+    /**
+     * Gets the width of the element to be used as the distance to translate on the X axis
+     *
+     * @private
+     * @returns {number} thw mwasured width of the view
+     * @memberof SlideInDirective
+     */
+    private getTranslateXWidth(): number {
+        return this.element.nativeElement.getMeasuredWidth() / screenScale;
+    }
+
+    /**
+     * checks the error to determine if the error was caused by cancelling the animation.
+     * If it was not caused by cancellation, throw the error. If it was cancellation, ignore as
+     * it was intentional
+     *
+     * @private
+     * @param {Error} err the error received in the catch call of the promise returned by the play function of the animation in show and dismiss
+     * @memberof SlideInDirective
+     */
+    private throwIfNotCancelled(err: Error) {
+        if (err.message.indexOf('cancel') === -1) {
+            throw err;
+        }
     }
 }
 

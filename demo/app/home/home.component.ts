@@ -37,4 +37,8 @@ export class HomeComponent {
     private onHideTapped(selector: string): void {
         this.sliders.find(s => s.selector === selector).dismiss()
     }
+
+    private onRightDrawerDismissed(): void {
+        alert('left view just dismissed');
+    }
 }

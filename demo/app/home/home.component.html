@@ -15,7 +15,7 @@
         <Label class="drawer" text="Maybe navigation?"></Label>
     </StackLayout>
 
-    <StackLayout slide-in slideFrom="right" selector="right" slideDuration="2000,300" class="right-drawer" col="1" rowSpan="5" row="0">
+    <StackLayout slide-in slideFrom="right" selector="right" slideDuration="2000,300" (dismissed)="onRightDrawerDismissed()" class="right-drawer" col="1" rowSpan="5" row="0">
         <Label class="drawer" text="Don't mind me"></Label>
     </StackLayout>
 
