@@ -4,9 +4,8 @@
 }
 
 .top {
-    background-color: red;
+    background-color: #97E1F6;
     border-bottom-width: 3;
-    color: white;
     border-bottom-color: #333333;
     z-index: 999;
 }
