@@ -1,28 +1,24 @@
 .snackbar, .drawer {
     text-align: center;
     padding: 20;
-    border-color: red;
-    border-width: 3;
-}
-
-.top {
-    z-index: 999;
 }
 
 .top {
     background-color: red;
     border-bottom-width: 3;
+    color: white;
     border-bottom-color: #333333;
+    z-index: 999;
 }
 
 .bottom {
-    background-color: #999999;
+    background-color: #E7E5E5;
     border-top-width: 3;
     border-top-color: #333333;
 }
 
 .right-drawer, .left-drawer {
-    background-color: lavender;
+    background-color: #F4F4F9;
     width: 100%;
     z-index: 999;
 }
@@ -33,4 +29,9 @@
 .left-drawer {
     border-right-width: 3;
     border-right-color: #333333;
+}
+
+Label {
+    font-size: 15;
+    font-weight: 500;
 }
