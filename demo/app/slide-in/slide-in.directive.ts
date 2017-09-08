@@ -57,6 +57,8 @@ export class SlideInDirective implements OnInit, OnChanges {
         // if the show animation is already running, don't execute again
         if (!this.showAnimation || this.showAnimation.isPlaying === false) {
 
+            this.setMeasuredMargin();
+
             // if the hide animation is running, cancel it so the show animation can take over
             if (this.hideAnimation && this.hideAnimation.isPlaying === true) {
                 this.hideAnimation.cancel();
@@ -117,7 +119,7 @@ export class SlideInDirective implements OnInit, OnChanges {
     }
 
     /**
-     * Sets an initial margin on the view based on the slideFrom input to move the view off
+     * Sets an initial margin on the view based on the slideFrom input to move the view far off
      * the screen on the side it will slide in from
      *
      * @private
@@ -125,10 +127,26 @@ export class SlideInDirective implements OnInit, OnChanges {
      */
     private setinitialMargin(): void {
         switch (this.slideFrom) {
-            case 'top': this.element.nativeElement.marginTop = screen.mainScreen.heightDIPs * -1; break;
-            case 'right': this.element.nativeElement.marginRight = screen.mainScreen.widthDIPs * -1; break;
-            case 'left': this.element.nativeElement.marginLeft = screen.mainScreen.widthDIPs * -1; break;
-            default: this.element.nativeElement.marginBottom = screen.mainScreen.heightDIPs * -1; break;
+            case 'top': this.element.nativeElement.marginTop = -1000; break;
+            case 'right': this.element.nativeElement.marginRight = -1000; break;
+            case 'left': this.element.nativeElement.marginLeft = -1000; break;
+            default: this.element.nativeElement.marginBottom = -1000; break;
+        }
+    }
+
+    /**
+     * After the element can be measured, sets a margin on the view based on the slideFrom input to move the view off
+     * the screen by so the edge of the view is just off screen on the side it will slide in from
+     *
+     * @private
+     * @memberof SlideInDirective
+     */
+    private setMeasuredMargin(): void {
+        switch (this.slideFrom) {
+            case 'top': this.element.nativeElement.marginTop = this.getTranslateYHeight() * -1; break;
+            case 'right': this.element.nativeElement.marginRight = this.getTranslateXWidth() * -2; break;
+            case 'left': this.element.nativeElement.marginLeft = this.getTranslateXWidth() * -2; break;
+            default: this.element.nativeElement.marginBottom = this.getTranslateYHeight() * -1; break;
         }
     }
 

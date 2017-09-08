@@ -17,9 +17,9 @@ export class HomeComponent {
 
     constructor() {
         this.slidePositions = [
+            'left',
             'bottom',
             'top',
-            'left',
             'right'
         ];
         this.slidePosition = this.slidePositions[0];
@@ -39,6 +39,6 @@ export class HomeComponent {
     }
 
     private onRightDrawerDismissed(): void {
-        alert('left view just dismissed');
+        alert('Oh no! The right view just ran away');
     }
 }

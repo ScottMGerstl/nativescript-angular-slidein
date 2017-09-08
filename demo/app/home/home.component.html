@@ -1,25 +1,25 @@
-<GridLayout columns="*,*" rows="auto,auto,auto,auto,*,auto">
+<GridLayout columns="*,*,*" rows="auto,auto,auto,auto,*,auto">
     <!-- My Component Page Markup -->
 
-    <ListPicker col="0", colSpan="2" row="1" [items]="slidePositions" selectedIndex="0" (selectedIndexChange)="selectedIndexChanged($event)"></ListPicker>
+    <ListPicker col="0", colSpan="3" row="1" [items]="slidePositions" selectedIndex="0" (selectedIndexChange)="selectedIndexChanged($event)"></ListPicker>
 
-    <Button (tap)="onShowTapped(slidePosition)" text="Open" row="2" col="0" colSpan="2"></Button>
-    <Button (tap)="onHideTapped(slidePosition)" text="Close" row="3" col="0" colSpan="2"></Button>
+    <Button (tap)="onShowTapped(slidePosition)" text="Open" row="2" col="0" colSpan="3"></Button>
+    <Button (tap)="onHideTapped(slidePosition)" text="Close" row="3" col="0" colSpan="3"></Button>
 
     <!-- Sliders -->
-    <StackLayout slide-in slideFrom="top" selector="top" slideDuration="300" class="top" colSpan="2" col="0" row="0">
+    <StackLayout slide-in slideFrom="top" selector="top" slideDuration="300" class="top" colSpan="3" col="0" row="0">
         <Label class="snackbar" text="Boo!"></Label>
     </StackLayout>
 
-    <StackLayout slide-in slideFrom="left" selector="left" class="left-drawer" col="0" rowSpan="5" row="0">
+    <StackLayout slide-in slideFrom="left" selector="left" class="left-drawer" col="0" rowSpan="5" colSpan="2" row="0">
         <Label class="drawer" text="Maybe navigation?"></Label>
     </StackLayout>
 
-    <StackLayout slide-in slideFrom="right" selector="right" slideDuration="2000,300" (dismissed)="onRightDrawerDismissed()" class="right-drawer" col="1" rowSpan="5" row="0">
+    <StackLayout slide-in slideFrom="right" selector="right" slideDuration="2000,300" (dismissed)="onRightDrawerDismissed()" class="right-drawer" col="1" colSpan="2" rowSpan="5" row="0">
         <Label class="drawer" text="Don't mind me"></Label>
     </StackLayout>
 
-    <StackLayout slide-in selector="bottom" slideFrom="bottom" class="bottom" col="0" colSpan="2" row="5">
+    <StackLayout slide-in selector="bottom" slideFrom="bottom" class="bottom" col="0" colSpan="3" row="5">
         <Label class="snackbar" text="Nom nom nom"></Label>
     </StackLayout>
 </GridLayout>
