@@ -22,6 +22,7 @@ export class HomeComponent {
             'top',
             'right'
         ];
+
         this.slidePosition = this.slidePositions[0];
     }
 
@@ -31,11 +32,11 @@ export class HomeComponent {
     }
 
     private onShowTapped(selector: string): void {
-        this.sliders.find(s => s.selector === selector).show()
+        this.sliders.find(s => s.selector === selector).show();
     }
 
     private onHideTapped(selector: string): void {
-        this.sliders.find(s => s.selector === selector).dismiss()
+        this.sliders.find(s => s.selector === selector).dismiss();
     }
 
     private onRightDrawerDismissed(): void {

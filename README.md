@@ -44,16 +44,28 @@ Make sure the views you want to animate in and out are positioned on the edges o
 
 - **slideFrom : SlidePosition** optional - tells which side of the screen to slide the view in from. Available values: 'top' | 'right' | 'left' | 'bottom'. bottom is default if not specified
 - **selector : string** optional - a programmer specified string identifier that can be used with a QueryList and @ViewChildren when more than one directive is applied to a page/component.
-- **slideDuration : number | string** - a value or values (comma delimited) to specify how long the animation lasts. If a comma delimitad list of values are specified, the first value is the slide in duration and the second is the slide out duration. They must be positive numbers and cannot exceed 2 values
+- **slideDuration : number | string** - a value or values (comma delimited) to specify how long the animation lasts. If a comma delimited list of values are specified, the first value is the slide in duration and the second is the slide out duration. They must be positive numbers and cannot exceed 2 values
 
 ### Events
 
-- **dismissed** - An event emitted when the view has successfully dismissed fully. Both the show and dismiss actions can be overriden by the other action. This means if your user decides they want to dismiss the view but they change their mind and decide to keep it open before it fully dismisses (This is dependant on your implementation), that the event will not fire and cause any cleanup functions to fire prematurely.
+- **dismissed** - An event emitted when the view has successfully dismissed fully. Both the show and dismiss actions can be overriden by the other action. This means if your user decides they want to dismiss the view but they change their mind and decide to keep it open before it fully dismisses (This is dependant on your implementation), that the event will not fire prematurely and cause any cleanup functions to fire before the view is fully dismissed.
+
+## Nuiances
+
+### Styles
+You may find your views animate in behind other elements. To change this, you can set the z-index as a higher number (example: 999).
+
+
+### Taps
+Taps go "through" views. Its how you're able to tap on a button or view deep in your view tree. If you want to stop elements behind the animated view from being interactive, a simple way is to set a tap handler on the top-most animated view that just does nothing. This will "handle" the event will not go higher up the view tree. If there are other nested elements within the animated view, they will get the tap event first and will have a chance to act on it before it hits your conatiner.
+
+## Example Code
 
 ### XML
 ```XML
 <ActionBar title="Slide in"></ActionBar>
 <GridLayout columns="*,*,*" rows="auto,*,auto,auto,auto,*,auto">
+
     <!-- Component Page Markup -->
     <ListPicker col="0", colSpan="3" row="2" [items]="slidePositions" selectedIndex="0"
         (selectedIndexChange)="selectedIndexChanged($event)"></ListPicker>
@@ -114,6 +126,7 @@ export class HomeComponent {
             'top',
             'right'
         ];
+
         this.slidePosition = this.slidePositions[0];
     }
 
@@ -123,16 +136,56 @@ export class HomeComponent {
     }
 
     private onShowTapped(selector: string): void {
-        this.sliders.find(s => s.selector === selector).show()
+        this.sliders.find(s => s.selector === selector).show();
     }
 
     private onHideTapped(selector: string): void {
-        this.sliders.find(s => s.selector === selector).dismiss()
+        this.sliders.find(s => s.selector === selector).dismiss();
     }
 
     private onRightDrawerDismissed(): void {
         alert('Oh no! The right view just ran away');
     }
+}
+```
+
+### CSS
+```css
+.snackbar, .drawer {
+    text-align: center;
+    padding: 20;
+}
+
+.top {
+    background-color: #97E1F6;
+    border-bottom-width: 3;
+    border-bottom-color: #333333;
+    z-index: 999;
+}
+
+.bottom {
+    background-color: #E7E5E5;
+    border-top-width: 3;
+    border-top-color: #333333;
+}
+
+.right-drawer, .left-drawer {
+    background-color: #F4F4F9;
+    width: 100%;
+    z-index: 999;
+}
+.right-drawer {
+    border-left-width: 3;
+    border-left-color: #333333;
+}
+.left-drawer {
+    border-right-width: 3;
+    border-right-color: #333333;
+}
+
+Label {
+    font-size: 15;
+    font-weight: 500;
 }
 ```
 
