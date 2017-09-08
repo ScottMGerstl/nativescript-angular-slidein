@@ -34,7 +34,9 @@ Add `slide-in` to the Layouts you want to apply the behavior to (see examples be
 Make sure the views you want to animate in and out are positioned on the edges of your screen layout containers.
 
 ### Layout Containers
- - **GridLayout** - For views on the **top** and **bottom** of the screen, add a row to the grid for each position (top and/or bottom); using `auto` works well. Rows do not honor the space in the grid unless the view occupies the space. For views on the **left** and/or **right**, do not add dedicated columns unless you are going to use them in correlation with colSpan to define the size of the views. The column space is honored even if the view has been moved off the screen.
+ - **GridLayout**
+    - For views on the **top** and **bottom** of the screen, add a row to the grid for each position (top and/or bottom); using `auto` works well. Rows do not honor the space in the grid unless the view occupies the space.
+    - For views on the **left** and/or **right**, do not add dedicated columns unless you are going to use them in correlation with colSpan to define the size of the views. The column space is honored even if the view has been moved off the screen. They also require the **width** to be set to **100%**
 
  - **DockLayout** - **Doesn't** play nice with negative margins on the **top** of the page. Avoid Dock Layouts if you need to animate from the top of the page
 
@@ -53,11 +55,11 @@ Make sure the views you want to animate in and out are positioned on the edges o
 ## Nuiances
 
 ### Styles
-You may find your views animate in behind other elements. To change this, you can set the z-index as a higher number (example: 999).
+- You may find your views animate in behind other elements. To change this, you can set the z-index as a higher number (example: 999).
 
 
 ### Taps
-Taps go "through" views. Its how you're able to tap on a button or view deep in your view tree. If you want to stop elements behind the animated view from being interactive, a simple way is to set a tap handler on the top-most animated view that just does nothing. This will "handle" the event will not go higher up the view tree. If there are other nested elements within the animated view, they will get the tap event first and will have a chance to act on it before it hits your conatiner.
+- Taps go "through" views. Its how you're able to tap on a button or view deep in your view tree. If you want to stop elements behind the animated view from being interactive, a simple way is to set a tap handler on the top-most animated view that just does nothing. This will "handle" the event will not go higher up the view tree. If there are other nested elements within the animated view, they will get the tap event first and will have a chance to act on it before it hits your conatiner.
 
 ## Example Code
 
