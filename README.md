@@ -2,10 +2,8 @@
 An Angular directive for NativeScript to position views off the screen and animate them in and out.
 
 ## Platforms
-Works on Android.
-Probably works on iOS.
-
-There is no access to specific platform APIs so iOS should work. I have not had a chance to test it yet. Help and/or feedback on this would be appreciated.
+ - Works on Android.
+ - iOS needs testing.
 
 ## Installation
 `npm i nativescript-angular-slidein --save`
@@ -31,72 +29,59 @@ import { SlideInModule } from 'nativescript-angular-slidein';
 
 Add `slide-in` to the Layouts you want to apply the behavior to (see examples below).
 
-Make sure the views you want to animate in and out are positioned on the edges of your screen layout containers.
+Make sure the views you want to animate in and out are positioned on the edges of your screen layout container.
 
-### Layout Containers
- - **GridLayout**
-    - For views on the **top** and **bottom** of the screen, add a row to the grid for each position (top and/or bottom); using `auto` works well. Rows do not honor the space in the grid unless the view occupies the space.
-    - For views on the **left** and/or **right**, do not add dedicated columns unless you are going to use them in correlation with colSpan to define the size of the views. The column space is honored even if the view has been moved off the screen. They also require the **width** to be set to **100%**
-
- - **DockLayout** - **Doesn't** play nice with negative margins on the **top** of the page. Avoid Dock Layouts if you need to animate from the top of the page
-
- - I have not tested the others yet
+### Layout Container
+ - Use **GridLayout**
+ - For views on the **top** and **bottom** of the screen, adding a row to the grid for each position (top and/or bottom); using `auto` works well.
+ - For views on the **left** and/or **right**, there is no need to add dedicated columns if you only have one column in your layout. Style the element to animate with the width property.
 
 ### Attributes
 
-- **slideFrom : SlidePosition** optional - tells which side of the screen to slide the view in from. Available values: 'top' | 'right' | 'left' | 'bottom'. bottom is default if not specified
+- **slideFrom : string | SlidePosition** optional - tells which side of the screen to slide the view in from. Available values: 'top' | 'right' | 'left' | 'bottom'. bottom is default if not specified
 - **selector : string** optional - a programmer specified string identifier that can be used with a QueryList and @ViewChildren when more than one directive is applied to a page/component.
-- **slideDuration : number | string** - a value or values (comma delimited) to specify how long the animation lasts. If a comma delimited list of values are specified, the first value is the slide in duration and the second is the slide out duration. They must be positive numbers and cannot exceed 2 values
+- **slideDuration : number | string** - a value or values (comma delimited) to specify how long the animation lasts. If a comma delimited list of values are specified, the first value is the slide in duration and the second is the slide out duration. They must be non-numbers and cannot exceed 2 values
 
 ### Events
 
 - **dismissed** - An event emitted when the view has successfully dismissed fully. Both the show and dismiss actions can be overriden by the other action. This means if your user decides they want to dismiss the view but they change their mind and decide to keep it open before it fully dismisses (This is dependant on your implementation), that the event will not fire prematurely and cause any cleanup functions to fire before the view is fully dismissed.
 
-## Nuiances
+## Nuances
 
 ### Styles
 - You may find your views animate in behind other elements. To change this, you can set the z-index as a higher number (example: 999).
 
 
 ### Taps
-- Taps go "through" views. Its how you're able to tap on a button or view deep in your view tree. If you want to stop elements behind the animated view from being interactive, a simple way is to set a tap handler on the top-most animated view that just does nothing. This will "handle" the event will not go higher up the view tree. If there are other nested elements within the animated view, they will get the tap event first and will have a chance to act on it before it hits your conatiner.
+- Taps go "through" views. Its how you're able to tap on a button or view deep in your view tree. If you want to stop elements behind the animated view from being interactive, a simple way is to set a tap handler on the top-most animated view that just does nothing. This will "handle" the event will not go higher up the view tree. If there are other nested elements within the animated view, they will get the tap event first and will have a chance to act on it before it hits your conatiner or buttons.
 
 ## Example Code
 
 ### XML
 ```XML
 <ActionBar title="Slide in"></ActionBar>
-<GridLayout columns="*,*,*" rows="auto,*,auto,auto,auto,*,auto">
+<GridLayout columns="*" rows="auto,*,auto,auto,auto,*,auto">
 
-    <!-- Component Page Markup -->
-    <ListPicker col="0", colSpan="3" row="2" [items]="slidePositions" selectedIndex="0"
-        (selectedIndexChange)="selectedIndexChanged($event)"></ListPicker>
+    <!-- My Component Page Markup -->
+    <ListPicker col="0" row="2" [items]="slidePositions" selectedIndex="0" (selectedIndexChange)="selectedIndexChanged($event)"></ListPicker>
 
-    <Button (tap)="onShowTapped(slidePosition)" text="Open" row="3" col="0" colSpan="3"></Button>
-    <Button (tap)="onHideTapped(slidePosition)" text="Close" row="4" col="0" colSpan="3"></Button>
+    <Button (tap)="onShowTapped(slidePosition)" text="Open" row="3" col="1"></Button>
+    <Button (tap)="onHideTapped(slidePosition)" text="Close" row="4" col="1"></Button>
 
     <!-- Sliders -->
-    <StackLayout slide-in slideFrom="top" selector="top" slideDuration="300"
-        class="top" colSpan="3" col="0" row="0">
-
+    <StackLayout slide-in slideFrom="top" selector="top" slideDuration="300" class="top" col="0" row="0">
         <Label class="snackbar" text="Hey! Listen!"></Label>
     </StackLayout>
 
-    <StackLayout slide-in slideFrom="left" selector="left"
-        class="left-drawer" col="0" rowSpan="6" colSpan="2" row="0">
-
+    <StackLayout slide-in slideFrom="left" selector="left" class="left-drawer" col="0" rowSpan="7" row="0">
         <Label class="drawer" text="Maybe navigation?"></Label>
     </StackLayout>
 
-    <StackLayout slide-in slideFrom="right" selector="right" slideDuration="2000,300" (dismissed)="onRightDrawerDismissed()"
-        class="right-drawer" col="1" colSpan="2" rowSpan="6" row="0">
-
+    <StackLayout slide-in slideFrom="right" selector="right" slideDuration="2000,300" (dismissed)="onRightDrawerDismissed()" class="right-drawer" col="0" rowSpan="7" row="0">
         <Label class="drawer" text="A wild right view has appeared" textWrap="true"></Label>
     </StackLayout>
 
-    <StackLayout slide-in selector="bottom" slideFrom="bottom"
-        class="bottom" col="0" colSpan="3" row="6">
-
+    <StackLayout slide-in selector="bottom" slideFrom="bottom" class="bottom" col="0" row="6">
         <Label class="snackbar" text="Snack Time!"></Label>
     </StackLayout>
 </GridLayout>
@@ -173,7 +158,7 @@ export class HomeComponent {
 
 .right-drawer, .left-drawer {
     background-color: #F4F4F9;
-    width: 100%;
+    width: 70%;
     z-index: 999;
 }
 .right-drawer {
