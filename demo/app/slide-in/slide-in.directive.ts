@@ -67,8 +67,8 @@ export class SlideInDirective implements OnInit, OnChanges {
             // create the cancellable show animation
             this.showAnimation = this.element.nativeElement.createAnimation({
                 translate: {
-                    x: this.getTranslationX(),
-                    y: this.getTranslationY()
+                    x: this.getOnScreenTranslationX(),
+                    y: 0
                 },
                 duration: this.internalSlideDurations.slideIn
             });
@@ -100,8 +100,8 @@ export class SlideInDirective implements OnInit, OnChanges {
             // create the cancellable hide animation
             this.hideAnimation = this.element.nativeElement.createAnimation({
                 translate: {
-                    x: this.getTranslationX() * -1,
-                    y: this.getTranslationY() * -1
+                    x: this.getOffScreenTranslationX(),
+                    y: this.getOffScreenTranslationY()
                 },
                 duration: this.internalSlideDurations.slideOut
             });
@@ -127,10 +127,10 @@ export class SlideInDirective implements OnInit, OnChanges {
      */
     private setinitialMargin(): void {
         switch (this.slideFrom) {
-            case 'top': this.element.nativeElement.marginTop = -1000; break;
-            case 'right': this.element.nativeElement.marginRight = -1000; break;
-            case 'left': this.element.nativeElement.marginLeft = -1000; break;
-            default: this.element.nativeElement.marginBottom = -1000; break;
+            case 'top': this.element.nativeElement.translateY = -3000; break;
+            case 'right': this.element.nativeElement.translateX = 3000; break;
+            case 'left': this.element.nativeElement.translateX = -3000; break;
+            default: this.element.nativeElement.translateY = 3000; break;
         }
     }
 
@@ -143,10 +143,10 @@ export class SlideInDirective implements OnInit, OnChanges {
      */
     private setMeasuredMargin(): void {
         switch (this.slideFrom) {
-            case 'top': this.element.nativeElement.marginTop = this.getTranslateYHeight() * -1; break;
-            case 'right': this.element.nativeElement.marginRight = this.getTranslateXWidth() * -2; break;
-            case 'left': this.element.nativeElement.marginLeft = this.getTranslateXWidth() * -2; break;
-            default: this.element.nativeElement.marginBottom = this.getTranslateYHeight() * -1; break;
+            case 'top': this.element.nativeElement.translateY = this.getOffScreenTranslationY(); break;
+            case 'right': this.element.nativeElement.translateX = this.getOffScreenTranslationX(); break;
+            case 'left': this.element.nativeElement.translateX = this.getOffScreenTranslationX(); break;
+            default: this.element.nativeElement.translateY = this.getOffScreenTranslationY(); break;
         }
     }
 
@@ -160,15 +160,15 @@ export class SlideInDirective implements OnInit, OnChanges {
      * @returns {number} the distance to translate Y
      * @memberof SlideInDirective
      */
-    private getTranslationY(): number {
+    private getOffScreenTranslationY(): number {
 
         let y: number = 0;
 
         switch (this.slideFrom) {
-            case 'top': y = this.getTranslateYHeight(); break;
+            case 'top': y = this.getTranslateYHeight() * -1; break;
             case 'right': y = 0; break;
             case 'left': y = 0; break;
-            default: y = this.getTranslateYHeight() * -1; break;
+            default: y = this.getTranslateYHeight(); break;
         }
 
         return y;
@@ -184,14 +184,39 @@ export class SlideInDirective implements OnInit, OnChanges {
      * @returns {number}
      * @memberof SlideInDirective
      */
-    private getTranslationX(): number {
+    private getOnScreenTranslationX(): number {
+
+        let x: number = 0;
+        let baseX: number = (screen.mainScreen.widthDIPs - this.getViewWidth()) / 2;
+
+        switch (this.slideFrom) {
+            case 'top': x = 0; break;
+            case 'right': x = baseX; break;
+            case 'left': x = baseX * -1; break;
+            default: x = 0; break;
+        }
+
+        return x;
+    }
+
+    /**
+     * Gets the distance to translate on the X axis based on the slideFrom input.
+     * If sliding from top or bottom (default), translation is 0.
+     * If sliding from left, the tranlation is the width of the view .
+     * If sliding from right, the tranlation is the negative width of the view.
+     *
+     * @private
+     * @returns {number}
+     * @memberof SlideInDirective
+     */
+    private getOffScreenTranslationX(): number {
 
         let x: number = 0;
 
         switch (this.slideFrom) {
             case 'top': x = 0; break;
-            case 'right': x = this.getTranslateXWidth() * -1; break;
-            case 'left': x = this.getTranslateXWidth(); break;
+            case 'right': x = this.getTranslateXWidth(); break;
+            case 'left': x = this.getTranslateXWidth() * -1; break;
             default: x = 0; break;
         }
 
@@ -217,6 +242,17 @@ export class SlideInDirective implements OnInit, OnChanges {
      * @memberof SlideInDirective
      */
     private getTranslateXWidth(): number {
+        return (this.getViewWidth() + (screen.mainScreen.widthDIPs - this.getViewWidth()) / 2);
+    }
+
+    /**
+     * Gets the width of the element to be used as the distance to translate on the X axis
+     *
+     * @private
+     * @returns {number} thw mwasured width of the view
+     * @memberof SlideInDirective
+     */
+    private getViewWidth(): number {
         return this.element.nativeElement.getMeasuredWidth() / screenScale;
     }
 
